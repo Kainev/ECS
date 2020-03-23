@@ -3,12 +3,13 @@
 #include <memory>
 #include <unordered_map>
 
-#include "ECS/Types.h"
-#include "ECS/Component.h"
+#include "ECS/core/Types.h"
+#include "ECS/core/Component.h"
 
 
 namespace ECS
 {
+	
 	class Entity
 	{
 		using ComponentMap = std::unordered_map<ComponentId, std::shared_ptr<Component>>;

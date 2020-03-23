@@ -1,12 +1,14 @@
 #pragma once
 
-#include "ECS/Types.h"
+#include "ECS/core/Types.h"
 
 
 namespace ECS
 {
 	class Component
 	{
+		static unsigned int ID;
+
 	public:
 		Component() : mEntityId(0), mPoolIndex(0) {}
 
