@@ -5,6 +5,7 @@
 
 #include "ECS/core/Types.h"
 #include "ECS/core/Component.h"
+#include "ECS/utility/Utils.h"
 
 
 namespace ECS
@@ -17,6 +18,8 @@ namespace ECS
 	public:
 		explicit Entity(EntityId id) : mEntityId(id) {}
 
+		void AddComponent(ComponentId id, std::shared_ptr<Component> component);
+
 		EntityId GetId() const { return mEntityId; }
 		const ComponentMap& GetComponents() const { return mComponents; }
 
@@ -24,4 +27,10 @@ namespace ECS
 		EntityId mEntityId;
 		ComponentMap mComponents;
 	};
+
+	void Entity::AddComponent(ComponentId id, std::shared_ptr<Component> component)
+	{
+		ECS_ASSERT(mComponents.find(id) == mComponents.end(), "Duplicate Component!");
+		mComponents.emplace(id, component);
+	}
 }

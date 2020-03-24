@@ -160,7 +160,9 @@
     <ClInclude Include="include\ECS\core\Types.h" />
     <ClInclude Include="include\ECS\ecs.h" />
     <ClInclude Include="include\ECS\memory\ObjectPool.h" />
+    <ClInclude Include="include\ECS\memory\PoolAllocator.h" />
     <ClInclude Include="include\ECS\utility\Profiler.h" />
+    <ClInclude Include="include\ECS\utility\Utils.h" />
     <ClInclude Include="src\Components\Renderable.h" />
     <ClInclude Include="src\Components\Transform.h" />
     <ClInclude Include="src\ECS\Component.h" />

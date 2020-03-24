@@ -17,21 +17,28 @@ namespace ECS
 	public:
 		ObjectPool()
 		{
-				for (unsigned int i = 0; i < MAX_OBJECTS; i++)
-				{
-					mFreeIndexList.push_front(i);
-				}
+			for (unsigned int i = 0; i < MAX_OBJECTS; i++)
+			{
+				mFreeIndexList.push_front(i);
+			}
 		}
 		~ObjectPool()
 		{
 			//delete[] mObjects;
 		}
 
+		std::shared_ptr<T> GetObject()
+		{
+			size_t index = mFreeIndexList.back();
+			mFreeIndexList.pop_back();
+			mObjects[index] = std::make_shared<T>();
+			return mObjects[index];
+		}
 
 
 	private:
 		//std::array <T, MAX_OBJECTS> mObjects;
-		T mObjects[MAX_OBJECTS];
+		std::shared_ptr<T> mObjects[MAX_OBJECTS];
 		std::deque<unsigned int> mFreeIndexList;
 		
 	};
