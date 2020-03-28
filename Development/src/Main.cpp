@@ -5,100 +5,65 @@
 #include <chrono>
 #include <memory>
 
-#include <ECS/ecs.h>
+#include "Components/Transform.h"
 
 #include "Systems/RenderSystem.h"
 #include "Systems/PhysicsSystem.h"
+#include "Systems/InputSystem.h"
 
 #include "Components/Renderable.h"
 #include "Components/Mesh.h"
-#include "Components/Transform.h"
 
-//#include "ECS/memory/ObjectPool.h"
-#include "ECS/memory/PoolAllocator.h"
-//
-////#include "ECS/utility/Profiler.h"
-//
-//#define SLEEP(x) std::this_thread::sleep_for(std::chrono::milliseconds(x));
-//
-////void Run(ECS::Scene& scene, unsigned int iterations = 10);
-//
+#include "Components/Controller.h"
+#include "Components/RigidBody.h"
 
+#include "ECS/utility/Profiler.h"
 
-class Object
-{
-public:
-	Object() {}
+#include <ECS/ecs.h>
 
-	static void* operator new(size_t size) {
-		return allocator.Allocate();
-	}
+#define SLEEP(x) std::this_thread::sleep_for(std::chrono::milliseconds(x));
 
-	static void operator delete(void* ptr, size_t size) {
-		return allocator.DeAllocate(ptr);
-	}
-
-	static Pool_c allocator;
-};
-
-
-
+void Run(ECS::Scene& scene, unsigned int iterations = 10);
 
 int main()
 {
-	Object::allocator = new Pool_c();
-	Object::allocator.CreatePool(sizeof(Object), 64);
+	// Initialize Scene
+	ECS::Scene scene;
 
+	// Register valid components that can be attached to entities
+	scene.RegisterComponent<Transform, 1024>();
+	scene.RegisterComponent<Mesh, 1024>();
+	scene.RegisterComponent<RigidBody, 1024>();
+	scene.RegisterComponent<Controller, 1024>();
 
-	//const int arraySize = 10;
+	ECS::Entity& barrel = scene.CreateEntity<Transform, Mesh>();
 
-	//Object* objects[arraySize];
+	// Register Systems to act upon entities within the scene
+	scene.RegisterSystem<PhysicsSystem>();
+	scene.RegisterSystem<InputSystem>();
+	scene.RegisterSystem<RenderSystem>();
 
-	//{
-	//	for (int i = 0; i < arraySize; ++i)
-	//	{
-	//		objects[i] = new Object();
-	//		//std::cout << "new [" << i << "] = " << objects[i] << std::endl;
-	//	}
-	//}
+	// Creating entities: they will automatically be handled by the different systems depending on which components they have
+	auto& playerEntity = scene.CreateEntity<Transform, Mesh, RigidBody, Controller>();
 
-	//for (int i = 0; i < arraySize; ++i)
-	//{
-	//	delete objects[i];
-	//}
-
-
-	//// Initialize Scene
-	//ECS::Scene scene;
-
-	//// Register Components
-	//scene.RegisterComponent<Transform, 1024>();
-	//scene.RegisterComponent<Mesh, 1024>();
-
-	//// Register Systems
-	//scene.RegisterSystem<PhysicsSystem>();
-	//scene.RegisterSystem<RenderSystem>();
-
-	////
-	//auto playerEntity = scene.CreateEntity<Transform, Mesh>();
-
-	//Run(scene, 100);
+	scene.CreateEntity<Transform, Mesh, RigidBody>();
+	scene.CreateEntity<Transform, Mesh, RigidBody>();
 
 	return 0;
 }
 
 
-//void Run(ECS::Scene& scene, unsigned int iterations)
-//{
-//	unsigned int i = 0;
-//	while(i < iterations)
-//	{
-//		{
-//			PROFILE_SCOPE("SCENE_UPDATE");
-//			scene.Update(0.003);
-//		}
-//		SLEEP(3);
-//
-//		++i;
-//	}
-//}
+void Run(ECS::Scene& scene, unsigned int iterations)
+{
+	unsigned int i = 0;
+	while(i < iterations)
+	{
+		{
+			PROFILE_SCOPE("SCENE_UPDATE");
+			scene.Update(0.003);
+		}
+		SLEEP(3);
+
+		++i;
+	}
+}

@@ -31,9 +31,9 @@ namespace ECS
 
 			mStopped = true;
 
-			float duration = (end - start) * 0.001f;
+			float duration = end - start;
 
-			std::cout << mName << "::Duration: " << duration << "ms" << std::endl;
+			std::cout << mName << "::Duration: " << duration << "us" << std::endl;
 		}
 
 	private:

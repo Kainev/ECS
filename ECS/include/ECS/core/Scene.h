@@ -12,7 +12,7 @@
 #include "ECS/core/System.h"
 #include "ECS/core/Entity.h"
 #include "ECS/core/Component.h"
-#include "ECS/memory/ObjectPool.h"
+#include "ECS/memory/ComponentArray.h"
 #include "ECS/utility/Utils.h"
 
 
@@ -20,7 +20,7 @@ namespace ECS
 {
 	class Scene
 	{
-		using Components = std::vector<std::shared_ptr<IObjectPool>>;
+		using Components = std::vector<std::shared_ptr<ComponentAllocator>>;
 		using ComponentTypes = std::unordered_map<const char*, ComponentType>;
 		using Systems = std::vector<std::shared_ptr<BaseSystem>>;
 		using Entities = std::unordered_map<EntityId, std::shared_ptr<Entity>>;
@@ -42,10 +42,10 @@ namespace ECS
 		void RegisterComponent();
 
 		template<class ... Components>
-		std::shared_ptr<Entity> CreateEntity();
+		Entity& CreateEntity();
 
-		//template<typename T>
-		//std::shared_ptr<T> CreateComponent();
+		template<typename T>
+		Handle<T>* CreateComponent();
 
 	private:
 		ComponentTypes mComponentTypes;
@@ -58,14 +58,14 @@ namespace ECS
 		std::size_t mMaxEntites;
 
 		template<class Component=void, class ... Components>
-		void ProcessNewEntity();
-
+		void ProcessNewEntity(Entity* entity);
+		
 		template<>
-		void ProcessNewEntity<>();
+		void ProcessNewEntity<>(Entity* entity);
 	};
 
 
-	void Scene::Update(double deltaTime)
+	inline void Scene::Update(double deltaTime)
 	{
 		for (auto& system : mSystems)
 		{
@@ -90,49 +90,49 @@ namespace ECS
 	{
 		const char* typeName = typeid(T).name();
 		mComponentTypes[typeName] = static_cast<unsigned int>(mComponents.size());
-		mComponents.push_back(std::make_shared<ObjectPool<T, MAX_COMPONENTS>>());
+//		T::ID = static_cast<unsigned int>(mComponents.size());
+		mComponents.push_back(std::make_shared<ComponentArray<T, MAX_COMPONENTS>>());
 	}
 
 
 	template<class ... Components>
-	std::shared_ptr<Entity> Scene::CreateEntity()
+	Entity& Scene::CreateEntity()
 	{
-		ECS_ASSERT(mCurrentEntityCount < mMaxEntites, "ECS::ERROR::ENTITY_OVERFLOW");
+		//ECS_ASSERT(mCurrentEntityCount < mMaxEntites, "ECS::ERROR::ENTITY_OVERFLOW");
 
 		EntityId id = mAvailableEntities.front();
 		mAvailableEntities.pop();
 		++mCurrentEntityCount;
 
-		std::shared_ptr<Entity> entity = std::make_shared<Entity>(id);
+		Entity* entity = new Entity(0);
 		mEntities.emplace(id, entity);
 
-		ProcessNewEntity<Components...>();
+		ProcessNewEntity<Components...>(entity);
 
-		return entity;
+		return *entity;
 	}
 
-
-	template<class Component, class ... Components>
-	void Scene::ProcessNewEntity()
+	template<class T, class ... Components>
+	void Scene::ProcessNewEntity(Entity* entity)
 	{
-		std::cout << "Process 1" << std::endl;
-		ProcessNewEntity<Components...>();
+		entity->AddComponent(mComponentTypes[typeid(T).name()], CreateComponent<T>());
+
+		ProcessNewEntity<Components...>(entity);
 	}
 
 	template<>
-	void Scene::ProcessNewEntity()
+	void Scene::ProcessNewEntity(Entity* entity)
 	{
-		std::cout << "Processed!" << std::endl;
+		
 	}
 
-	//template<typename T>
-	//inline std::shared_ptr<T> Scene::CreateComponent()
-	//{
-	//	const char* typeName = typeid(T).name();
-	//	std::shared_ptr<T> component = std::make_shared<T>();
-	//	mComponents[mComponentTypes[typeName]].
-
-
-	//	return std::shared_ptr<T>();
-	//}
+	template<typename T>
+	inline Handle<T>* Scene::CreateComponent()
+	{
+		const char* typeName = typeid(T).name();
+		auto* component = mComponents[mComponentTypes[typeName]]->Get<T>();
+		return component;
+	}
 }
+
+

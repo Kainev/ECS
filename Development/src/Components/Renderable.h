@@ -1,9 +1,9 @@
 #pragma once
 
-class Renderable
+#include <ECS/ecs.h>
+
+class Renderable : public ECS::Component
 {
 public:
-	Renderable()
-	{
-	}
+	Renderable() {}
 };

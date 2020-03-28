@@ -65,16 +65,13 @@
     <ClInclude Include="include\ECS\ecs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\ECS\memory\ObjectPool.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\ECS\utility\Profiler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\ECS\utility\Utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\ECS\memory\PoolAllocator.h">
+    <ClInclude Include="include\ECS\memory\ComponentArray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
