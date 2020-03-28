@@ -21,11 +21,14 @@
     <ClCompile Include="src\Components\Transform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Components\Controller.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Components\Mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Components\Renderable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Components\Transform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -39,9 +42,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Components\Controller.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Components\RigidBody.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Systems\InputSystem.h">

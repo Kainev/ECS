@@ -5,10 +5,9 @@
 #include <ECS/ecs.h>
 
 #include "Components/Transform.h"
-#include "Components/Renderable.h"
 
 
-class RenderSystem : public ECS::System<Transform, Renderable>
+class RenderSystem : public ECS::System<Transform>
 {
 public:
 	RenderSystem(ECS::Scene* scene) : System(scene) {}
@@ -19,7 +18,7 @@ public:
 
 		for (auto& tuple : mComponentTuples)
 		{
-
+			Transform* transformComponent = std::get<Transform*>(tuple);
 		}
 	}
 };

@@ -45,7 +45,7 @@ namespace ECS
 		Entity& CreateEntity();
 
 		template<typename T>
-		Handle<T>* CreateComponent();
+		T* CreateComponent();
 
 	private:
 		ComponentTypes mComponentTypes;
@@ -90,7 +90,7 @@ namespace ECS
 	{
 		const char* typeName = typeid(T).name();
 		mComponentTypes[typeName] = static_cast<unsigned int>(mComponents.size());
-//		T::ID = static_cast<unsigned int>(mComponents.size());
+		T::ID = static_cast<unsigned int>(mComponents.size());
 		mComponents.push_back(std::make_shared<ComponentArray<T, MAX_COMPONENTS>>());
 	}
 
@@ -109,6 +109,11 @@ namespace ECS
 
 		ProcessNewEntity<Components...>(entity);
 
+		for (auto& system : mSystems)
+		{
+			system->OnEntityCreated(*entity);
+		}
+
 		return *entity;
 	}
 
@@ -116,23 +121,17 @@ namespace ECS
 	void Scene::ProcessNewEntity(Entity* entity)
 	{
 		entity->AddComponent(mComponentTypes[typeid(T).name()], CreateComponent<T>());
-
 		ProcessNewEntity<Components...>(entity);
 	}
 
 	template<>
-	void Scene::ProcessNewEntity(Entity* entity)
-	{
-		
-	}
+	void Scene::ProcessNewEntity(Entity* entity) {}
 
 	template<typename T>
-	inline Handle<T>* Scene::CreateComponent()
+	inline T* Scene::CreateComponent()
 	{
 		const char* typeName = typeid(T).name();
 		auto* component = mComponents[mComponentTypes[typeName]]->Get<T>();
 		return component;
 	}
 }
-
-

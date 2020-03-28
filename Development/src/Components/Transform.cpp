@@ -1,3 +1,3 @@
 #include "Transform.h"
 
-unsigned int Transform::ID;
+ECS_COMPONENT_SOURCE(Transform);

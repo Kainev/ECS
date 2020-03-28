@@ -154,14 +154,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Components\Controller.cpp" />
+    <ClCompile Include="src\Components\Mesh.cpp" />
     <ClCompile Include="src\Components\Transform.cpp" />
     <ClCompile Include="src\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Components\Controller.h" />
     <ClInclude Include="src\Components\Mesh.h" />
-    <ClInclude Include="src\Components\Renderable.h" />
-    <ClInclude Include="src\Components\RigidBody.h" />
     <ClInclude Include="src\Components\Transform.h" />
     <ClInclude Include="src\Systems\InputSystem.h" />
     <ClInclude Include="src\Systems\PhysicsSystem.h" />
